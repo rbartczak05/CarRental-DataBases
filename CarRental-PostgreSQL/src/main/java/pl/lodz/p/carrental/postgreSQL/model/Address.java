@@ -9,10 +9,6 @@ import java.util.UUID;
 @Access(AccessType.FIELD)
 public class Address extends AbstractEntity {
 
-    @Id
-    @Column(name = "addressId")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID addressId;
     @Column(name = "street")
     private String street;
     @Column(name = "house_number")
@@ -31,14 +27,6 @@ public class Address extends AbstractEntity {
 
     public Address() {
 
-    }
-
-    public UUID getAddressId() {
-        return addressId;
-    }
-
-    public void setAddressId(UUID id) {
-        this.addressId = id;
     }
 
     public String getStreet() {
@@ -76,10 +64,11 @@ public class Address extends AbstractEntity {
     @Override
     public String toString() {
         return "Address{" +
-                "street='" + street + '\'' +
-                ", houseNumber='" + houseNumber + '\'' +
-                ", city='" + city + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                '}';
+                "id=" + getId() +
+                ", postalCode='" + getPostalCode() + '\'' +
+                ", city='" + getCity() + '\'' +
+                ", houseNumber='" + getHouseNumber() + '\'' +
+                ", street='" + getStreet() + '\'' +
+                "}";
     }
 }

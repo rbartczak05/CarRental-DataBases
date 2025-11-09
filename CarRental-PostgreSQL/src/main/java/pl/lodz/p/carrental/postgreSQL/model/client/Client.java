@@ -3,32 +3,32 @@ package pl.lodz.p.carrental.postgreSQL.model.client;
 import jakarta.persistence.*;
 import pl.lodz.p.carrental.postgreSQL.model.AbstractEntity;
 import pl.lodz.p.carrental.postgreSQL.model.Address;
+import pl.lodz.p.carrental.postgreSQL.model.Rent;
 
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "client_type")
+@DiscriminatorColumn(name = "client_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "client")
 @Access(AccessType.FIELD)
 public abstract class Client extends AbstractEntity {
 
-    @Id
-    @Column(name = "clientId")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID clientId;
     @Column(name = "name")
     private String name;
     @Column(name = "email")
     private String email;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "clientType")
-    private ClientType clientType;
     @Column(name = "balance")
     private double balance;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "client_type", insertable = false, updatable = false)
+    private ClientType clientType;
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "addressId")
+    @JoinColumn(name = "address_id")
     private Address address;
+    @OneToMany(mappedBy = "client", cascade = CascadeType.MERGE)
+    private List<Rent> rents = new ArrayList<>();
 
     public Client(String name, String email, double balance, Address address) {
         this.name = name;
@@ -39,10 +39,6 @@ public abstract class Client extends AbstractEntity {
 
     public Client() {
 
-    }
-
-    public UUID getClientId() {
-        return clientId;
     }
 
     public String getName() {
@@ -61,20 +57,20 @@ public abstract class Client extends AbstractEntity {
         this.email = email;
     }
 
-    public ClientType getClientType() {
-        return clientType;
-    }
-
-    public void setClientType(ClientType clientType) {
-        this.clientType = clientType;
-    }
-
     public double getBalance() {
         return balance;
     }
 
     public void setBalance(double balance) {
         this.balance = balance;
+    }
+
+    public ClientType getClientType() {
+        return clientType;
+    }
+
+    public void setClientType(ClientType clientType) {
+        this.clientType = clientType;
     }
 
     public Address getAddress() {
@@ -87,13 +83,11 @@ public abstract class Client extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Client{" +
-                "clientId=" + clientId +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", clientType=" + clientType +
-                ", balance=" + balance +
-                ", address=" + address +
-                '}';
+        return ", id=" + getId() +
+                ", name=" + getName() +
+                ", email=" + getEmail() +
+                ", clientType=" + getClientType() +
+                ", balance=" + getBalance() +
+                ", address=" + getAddress();
     }
 }

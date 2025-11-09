@@ -8,7 +8,7 @@ import pl.lodz.p.carrental.postgreSQL.model.Address;
 
 @Entity
 @Access(AccessType.FIELD)
-@DiscriminatorValue("client_gold")
+@DiscriminatorValue("GOLD")
 public class ClientGold extends Client {
 
     public ClientGold(String name, String email, double balance, Address address) {

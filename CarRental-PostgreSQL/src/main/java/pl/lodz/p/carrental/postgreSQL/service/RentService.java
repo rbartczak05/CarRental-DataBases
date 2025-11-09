@@ -10,6 +10,8 @@ import pl.lodz.p.carrental.postgreSQL.repository.ClientRepository;
 import pl.lodz.p.carrental.postgreSQL.repository.RentRepository;
 import pl.lodz.p.carrental.postgreSQL.repository.VehicleRepository;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class RentService {
@@ -42,15 +44,21 @@ public class RentService {
         Vehicle vehicle = vehicleRepository.searchById(em, vehicleId);
 
         Rent rent = new Rent(client, vehicle, days);
-        
+        rent.getVehicle().setRented(true);
+
+
         rentRepository.persist(em, rent);
         return rent;
     }
 
-    public Rent updateRent(UUID rentId, Rent rent){
-        if (rentId == null) {
-            throw new IllegalArgumentException("Rent cannot be null");
-        }
+    public Rent endRent(Rent rent) {
+        rent.setActive(false);
+        rent.setReturnDate(LocalDate.now());
+        rent.getVehicle().setRented(false);
+        return rent;
+    }
+
+    public Rent updateRent(Rent rent){
         if (rent == null) {
             throw new IllegalArgumentException("Rent cannot be null");
         }

@@ -12,11 +12,7 @@ import java.util.UUID;
 @Access(AccessType.FIELD)
 public abstract class Vehicle extends AbstractEntity {
 
-    @Id
-    @Column(name = "vehicleId")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID vehicleId;
-    @Column(name = "pricePerDay")
+    @Column(name = "price_per_day")
     private double pricePerDay;
     @Column(name = "rented")
     private boolean rented;
@@ -28,14 +24,6 @@ public abstract class Vehicle extends AbstractEntity {
 
     public Vehicle() {
 
-    }
-
-    public UUID getVehicleId() {
-        return vehicleId;
-    }
-
-    public void setVehicleId(UUID vehicleId) {
-        this.vehicleId = vehicleId;
     }
 
     public double getPricePerDay() {
@@ -56,10 +44,8 @@ public abstract class Vehicle extends AbstractEntity {
 
     @Override
     public String toString() {
-        return "Vehicle{" +
-                "vehicleId=" + vehicleId +
-                ", pricePerDay=" + pricePerDay +
-                ", rented=" + rented +
-                '}';
+        return "id=" + getId() +
+                ", rented=" + isRented() +
+                ", pricePerDay=" + getPricePerDay();
     }
 }

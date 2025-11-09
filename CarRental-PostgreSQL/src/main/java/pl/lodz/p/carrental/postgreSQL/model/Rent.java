@@ -10,23 +10,21 @@ import java.util.UUID;
 @Entity
 @Table(name = "rent")
 @Access(AccessType.FIELD)
-public class Rent {
+public class Rent extends AbstractEntity {
 
-    @Id
-    @Column(name = "rentId")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID rentId;
     @ManyToOne(fetch = FetchType.EAGER ,cascade = CascadeType.MERGE)
-    @JoinColumn(name = "clientId", foreignKey = @ForeignKey(name = "fk_rent_client_id"))
+    @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "fk_rent_client_id"))
     private Client client;
     @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
-    @JoinColumn(name = "vehicleId", foreignKey = @ForeignKey(name = "fk_rent_vehicle_id"))
+    @JoinColumn(name = "vehicle_id", foreignKey = @ForeignKey(name = "fk_rent_vehicle_id"))
     private Vehicle vehicle;
     @Column(name = "days")
     private int days;
-    @Column(name = "startDate")
+    @Column(name = "start_date")
     private LocalDate startDate;
-    @Column(name = "endDate")
+    @Column(name = "return_date")
+    private LocalDate returnDate;
+    @Column(name = "end_date")
     private LocalDate endDate;
     @Column(name = "price")
     private double price;
@@ -38,6 +36,7 @@ public class Rent {
         this.vehicle = vehicle;
         this.days = days;
         this.startDate = LocalDate.now();
+        this.returnDate = null;
         this.endDate = LocalDate.now().plusDays(days);
         this.price = (vehicle.getPricePerDay() * days) * (1.00 - client.getClientType().getDiscount());
         this.active = true;
@@ -45,14 +44,6 @@ public class Rent {
 
     public Rent() {
 
-    }
-
-    public UUID getRentId() {
-        return rentId;
-    }
-
-    public void setRentId(UUID id) {
-        this.rentId = id;
     }
 
     public Client getClient() {
@@ -87,6 +78,14 @@ public class Rent {
         this.startDate = startDate;
     }
 
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
+    }
+
     public LocalDate getEndDate() {
         return endDate;
     }
@@ -113,8 +112,7 @@ public class Rent {
 
     @Override
     public String toString() {
-        return "Rent{" +
-                "rentId=" + rentId +
+        return "Rent{" + getId() +
                 ", client=" + client +
                 ", vehicle=" + vehicle +
                 ", days=" + days +

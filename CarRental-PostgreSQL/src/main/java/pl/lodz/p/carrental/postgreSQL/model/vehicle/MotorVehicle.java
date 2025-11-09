@@ -42,9 +42,8 @@ public abstract class MotorVehicle extends Vehicle {
 
     @Override
     public String toString() {
-        return "MotorVehicle{" +
-                "plateNumber='" + plateNumber + '\'' +
-                ", engineDisplacement=" + engineDisplacement +
-                '}';
+        return super.toString() +
+                ", engineDisplacement=" + getEngineDisplacement() +
+                ", plateNumber=" + getPlateNumber();
     }
 }

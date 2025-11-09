@@ -87,6 +87,8 @@ public class Main {
             Rent rent4 = new Rent(client4, moped2, 25);
             Rent rent5 = new Rent(client5, bicycle1, 30);
 
+
+
             rentRepository.persist(em, rent1);
             rentRepository.persist(em, rent2);
             rentRepository.persist(em, rent3);
@@ -95,6 +97,12 @@ public class Main {
             System.out.println("Zapisano wypożyczenia.");
 
             tx.commit();
+            System.out.println(rent1);
+            System.out.println(rent2);
+            System.out.println(rent3);
+            System.out.println(rent4);
+            System.out.println(rent5);
+
             System.out.println("\nTransakcja zakończona sukcesem! Obiekty zapisane w bazie.");
 
         } catch (Exception e) {

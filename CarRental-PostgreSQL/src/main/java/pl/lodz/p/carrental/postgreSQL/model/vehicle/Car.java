@@ -29,8 +29,8 @@ public class Car extends MotorVehicle {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "segement='" + segement + '\'' +
-                '}';
+        return "Car{" + super.toString() +
+                ", segement=" + getSegement() +
+                "}";
     }
 }
