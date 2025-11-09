@@ -14,6 +14,7 @@ public class Rent {
 
     @Id
     @Column(name = "rentId")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID rentId;
     @ManyToOne(fetch = FetchType.EAGER ,cascade = CascadeType.MERGE)
     @JoinColumn(name = "clientId", foreignKey = @ForeignKey(name = "fk_rent_client_id"))
@@ -33,7 +34,6 @@ public class Rent {
     private boolean active;
 
     public Rent(Client client, Vehicle vehicle, int days) {
-        this.rentId = UUID.randomUUID();
         this.client = client;
         this.vehicle = vehicle;
         this.days = days;

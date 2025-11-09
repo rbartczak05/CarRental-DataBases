@@ -7,12 +7,15 @@ import pl.lodz.p.carrental.postgreSQL.model.Address;
 import java.util.UUID;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "client_type")
 @Table(name = "client")
 @Access(AccessType.FIELD)
 public abstract class Client extends AbstractEntity {
 
     @Id
     @Column(name = "clientId")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID clientId;
     @Column(name = "name")
     private String name;
@@ -28,7 +31,6 @@ public abstract class Client extends AbstractEntity {
     private Address address;
 
     public Client(String name, String email, double balance, Address address) {
-        this.clientId = UUID.randomUUID();
         this.name = name;
         this.email = email;
         this.balance = balance;

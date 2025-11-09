@@ -7,24 +7,21 @@ import java.util.UUID;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type")
+@DiscriminatorColumn(name = "vehicle_type")
 @Table(name = "vehicle")
 @Access(AccessType.FIELD)
 public abstract class Vehicle extends AbstractEntity {
 
     @Id
     @Column(name = "vehicleId")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID vehicleId;
-    @Column(name = "plateNumber")
-    private String plateNumber;
     @Column(name = "pricePerDay")
     private double pricePerDay;
     @Column(name = "rented")
     private boolean rented;
 
-    public Vehicle(String plateNumber, double pricePerDay) {
-        this.vehicleId = UUID.randomUUID();
-        this.plateNumber = plateNumber;
+    public Vehicle(double pricePerDay) {
         this.pricePerDay = pricePerDay;
         this.rented = false;
     }
@@ -39,14 +36,6 @@ public abstract class Vehicle extends AbstractEntity {
 
     public void setVehicleId(UUID vehicleId) {
         this.vehicleId = vehicleId;
-    }
-
-    public String getPlateNumber() {
-        return plateNumber;
-    }
-
-    public void setPlateNumber(String plateNumber) {
-        this.plateNumber = plateNumber;
     }
 
     public double getPricePerDay() {
@@ -69,7 +58,6 @@ public abstract class Vehicle extends AbstractEntity {
     public String toString() {
         return "Vehicle{" +
                 "vehicleId=" + vehicleId +
-                ", plateNumber='" + plateNumber + '\'' +
                 ", pricePerDay=" + pricePerDay +
                 ", rented=" + rented +
                 '}';

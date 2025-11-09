@@ -11,6 +11,7 @@ public class Address extends AbstractEntity {
 
     @Id
     @Column(name = "addressId")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID addressId;
     @Column(name = "street")
     private String street;
@@ -22,7 +23,6 @@ public class Address extends AbstractEntity {
     private String postalCode;
 
     public Address(String street, String houseNumber, String city, String postalCode) {
-        this.addressId = UUID.randomUUID();
         this.street = street;
         this.houseNumber = houseNumber;
         this.city = city;

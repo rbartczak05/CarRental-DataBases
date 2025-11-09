@@ -10,8 +10,8 @@ import jakarta.persistence.Entity;
 @DiscriminatorValue("bicycle")
 public class Bicycle extends Vehicle {
 
-    public Bicycle(String plateNumber, double pricePerDay) {
-        super(plateNumber, pricePerDay);
+    public Bicycle(double pricePerDay) {
+        super(pricePerDay);
     }
 
     public Bicycle() {
