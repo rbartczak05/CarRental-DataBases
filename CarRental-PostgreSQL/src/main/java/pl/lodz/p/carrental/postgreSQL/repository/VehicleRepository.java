@@ -11,13 +11,15 @@ public class VehicleRepository {
         em.persist(vehicle);
     }
 
-    public Vehicle update(EntityManager em, Vehicle vehicle) {
-        return em.merge(vehicle);
+    public void update(EntityManager em, Vehicle vehicle) {
+        em.merge(vehicle);
     }
 
-    public Vehicle remove(EntityManager em, Vehicle vehicle) {
-        em.remove(vehicle);
-        return vehicle;
+    public void remove(EntityManager em, UUID vehicleId) {
+        Vehicle vehicle = searchById(em, vehicleId);
+        if (vehicle != null) {
+            em.remove(vehicle);
+        }
     }
 
     public Vehicle searchById(EntityManager em, UUID id) {

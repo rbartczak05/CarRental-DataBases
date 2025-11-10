@@ -3,6 +3,8 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/CarRental-Cassandra/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CarRental-Cassandra/src/main/resources" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/CarRental-Kafka/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/CarRental-Kafka/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CarRental-MongoDB/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CarRental-MongoDB/src/main/resources" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/CarRental-PostgreSQL/src/main/java" charset="UTF-8" />

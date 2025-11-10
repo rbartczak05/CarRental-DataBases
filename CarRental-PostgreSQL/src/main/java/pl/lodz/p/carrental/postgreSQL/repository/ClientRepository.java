@@ -11,15 +11,16 @@ public class ClientRepository {
         em.persist(client);
     }
 
-    public Client update(EntityManager em, Client client) {
-        return em.merge(client);
+    public void update(EntityManager em, Client client) {
+        em.merge(client);
     }
 
-    public Client remove(EntityManager em, Client client) {
-        em.remove(client);
-        return client;
+    public void remove(EntityManager em, UUID clientId) {
+        Client client = searchById(em, clientId);
+        if (client != null) {
+            em.remove(client);
+        }
     }
-
     public Client searchById(EntityManager em, UUID id) {
         return em.find(Client.class, id);
     }

@@ -11,13 +11,15 @@ public class AddressRepository {
         em.persist(address);
     }
 
-    public Address update(EntityManager em, Address address) {
-        return em.merge(address);
+    public void update(EntityManager em, Address address) {
+        em.merge(address);
     }
 
-    public Address remove(EntityManager em, Address address) {
-        em.remove(address);
-        return address;
+    public void remove(EntityManager em, UUID addressId) {
+        Address address = searchById(em, addressId);
+        if (address != null) {
+            em.remove(address);
+        }
     }
 
     public Address searchById(EntityManager em, UUID id) {

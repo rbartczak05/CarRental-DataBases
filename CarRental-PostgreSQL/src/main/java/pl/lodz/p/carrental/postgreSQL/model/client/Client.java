@@ -65,6 +65,13 @@ public abstract class Client extends AbstractEntity {
         this.balance = balance;
     }
 
+    public void addBalance(double amount) {
+        this.balance += amount;
+    }
+    public void substractBalance(double amount) {
+        this.balance -= amount;
+    }
+
     public ClientType getClientType() {
         return clientType;
     }
@@ -81,13 +88,22 @@ public abstract class Client extends AbstractEntity {
         this.address = address;
     }
 
+    public List<Rent> getRents() {
+        return rents;
+    }
+
+    public void addRent(Rent rent) {
+        rents.add(rent);
+    }
+
     @Override
     public String toString() {
-        return ", id=" + getId() +
+        return "id=" + getId() +
                 ", name=" + getName() +
                 ", email=" + getEmail() +
-                ", clientType=" + getClientType() +
                 ", balance=" + getBalance() +
-                ", address=" + getAddress();
+                ", address=" + getAddress() +
+                ", clientType=" + getClientType().getMaxVehicles() +
+                ", discount=" + getClientType().getDiscount();
     }
 }

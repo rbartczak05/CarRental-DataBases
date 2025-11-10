@@ -1,6 +1,8 @@
 package pl.lodz.p.carrental.postgreSQL.service;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import pl.lodz.p.carrental.postgreSQL.model.vehicle.Vehicle;
 import pl.lodz.p.carrental.postgreSQL.repository.VehicleRepository;
 
@@ -15,19 +17,53 @@ public class VehicleService {
         this.emf = emf;
     }
 
-    public void persist(Vehicle vehicle) {
-        vehicleRepository.persist(emf.createEntityManager(), vehicle);
+    public Vehicle persist(Vehicle vehicle) {
+        EntityTransaction tx = null;
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
+            vehicleRepository.persist(em, vehicle);
+            tx.commit();
+            return vehicle;
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public Vehicle update(Vehicle vehicle) {
-        return vehicleRepository.update(emf.createEntityManager(), vehicle);
+    public void update(Vehicle vehicle) {
+        EntityTransaction tx = null;
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
+            vehicleRepository.update(em, vehicle);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+        }
     }
 
-    public Vehicle remove(Vehicle vehicle) {
-        return vehicleRepository.remove(emf.createEntityManager(), vehicle);
+    public void remove(UUID vehicleId) {
+        EntityTransaction tx = null;
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
+            vehicleRepository.remove(em, vehicleId);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
-    public Vehicle searchClientById(UUID id) {
+    public Vehicle searchVehicleById(UUID id) {
         return vehicleRepository.searchById(emf.createEntityManager(), id);
     }
 }

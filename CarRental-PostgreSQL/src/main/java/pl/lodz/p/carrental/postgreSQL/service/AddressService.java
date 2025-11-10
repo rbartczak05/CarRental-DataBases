@@ -1,6 +1,8 @@
 package pl.lodz.p.carrental.postgreSQL.service;
 
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import pl.lodz.p.carrental.postgreSQL.model.Address;
 import pl.lodz.p.carrental.postgreSQL.repository.AddressRepository;
 
@@ -15,19 +17,54 @@ public class AddressService {
         this.emf = emf;
     }
 
-    public void persist(Address address) {
-        addressRepository.persist(emf.createEntityManager(), address);
+    public Address persist(Address address) {
+        EntityTransaction tx = null;
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
+            addressRepository.persist(em, address);
+            tx.commit();
+            return address;
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        }
+        return null;
     }
 
-    public Address update(Address address) {
-        return addressRepository.update(emf.createEntityManager(), address);
+    public void update(Address address) {
+        EntityTransaction tx = null;
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
+            addressRepository.update(em, address);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
-    public Address remove(Address address) {
-        return addressRepository.remove(emf.createEntityManager(), address);
+    public void remove(UUID addressId) {
+        EntityTransaction tx = null;
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
+            addressRepository.remove(em, addressId);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        }
     }
 
-    public Address searchClientById(UUID id) {
+    public Address searchById(UUID id) {
         return addressRepository.searchById(emf.createEntityManager(), id);
     }
 }

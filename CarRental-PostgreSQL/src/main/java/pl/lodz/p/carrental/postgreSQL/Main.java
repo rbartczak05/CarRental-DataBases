@@ -1,11 +1,8 @@
 package pl.lodz.p.carrental.postgreSQL;
 
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.Persistence;
 import pl.lodz.p.carrental.postgreSQL.model.Address;
-import pl.lodz.p.carrental.postgreSQL.model.Rent;
 import pl.lodz.p.carrental.postgreSQL.model.client.*;
 import pl.lodz.p.carrental.postgreSQL.model.vehicle.Bicycle;
 import pl.lodz.p.carrental.postgreSQL.model.vehicle.Car;
@@ -15,107 +12,80 @@ import pl.lodz.p.carrental.postgreSQL.repository.AddressRepository;
 import pl.lodz.p.carrental.postgreSQL.repository.ClientRepository;
 import pl.lodz.p.carrental.postgreSQL.repository.RentRepository;
 import pl.lodz.p.carrental.postgreSQL.repository.VehicleRepository;
+import pl.lodz.p.carrental.postgreSQL.service.AddressService;
+import pl.lodz.p.carrental.postgreSQL.service.ClientService;
+import pl.lodz.p.carrental.postgreSQL.service.RentService;
+import pl.lodz.p.carrental.postgreSQL.service.VehicleService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
 
         EntityManagerFactory emf = null;
-        EntityManager em = null;
-        EntityTransaction tx = null;
 
         try {
             emf = Persistence.createEntityManagerFactory("postgres");
-            em = emf.createEntityManager();
 
+            AddressRepository addressRepository = new AddressRepository();
             ClientRepository clientRepository = new ClientRepository();
             VehicleRepository vehicleRepository = new VehicleRepository();
             RentRepository rentRepository = new RentRepository();
-            AddressRepository addressRepository = new AddressRepository();
 
-            tx = em.getTransaction();
-            tx.begin();
+            AddressService addressService = new AddressService(addressRepository, emf);
+            ClientService clientService = new ClientService(clientRepository, emf);
+            VehicleService vehicleService = new VehicleService(vehicleRepository, emf);
+            RentService rentService = new RentService(emf, clientRepository, rentRepository, vehicleRepository);
 
+            System.out.println("--- Tworzenie 10 adresów ---");
+            List<Address> addresses = new ArrayList<>();
+            for (int i = 1; i <= 10; i++) {
+                new Address("Ulica " + i, String.valueOf(i), "Miasto " + i, "00-00" + i);
+            }
 
-            System.out.println("--- Tworzenie 5 obiektów Address ---");
-            Address addr1 = new Address("Piotrkowska", "1", "Łódź", "90-001");
-            Address addr2 = new Address("Marszałkowska", "10", "Warszawa", "00-001");
-            Address addr3 = new Address("Grunwaldzka", "20", "Gdańsk", "80-001");
-            Address addr4 = new Address("Floriańska", "30", "Kraków", "30-001");
-            Address addr5 = new Address("Wrocławska", "40", "Poznań", "60-001");
+            System.out.println("\n--- Tworzenie 10 klientów ---");
+            Client client1 = clientService.persist(new ClientStandard("Std Klient 1", "std1@ex.com", 1000.0, addresses.get(0)));
+            Client client2 = clientService.persist(new ClientStandard("Std Klient 2", "std2@ex.com", 2000.0, addresses.get(1)));
+            Client client3 = clientService.persist(new ClientBronze("Brz Klient 1", "brz1@ex.com", 3000.0, addresses.get(2)));
+            Client client4 = clientService.persist(new ClientBronze("Brz Klient 2", "brz2@ex.com", 4000.0, addresses.get(3)));
+            Client client5 = clientService.persist(new ClientSilver("Slv Klient 1", "slv1@ex.com", 5000.0, addresses.get(4)));
+            Client client6 = clientService.persist(new ClientSilver("Slv Klient 2", "slv2@ex.com", 6000.0, addresses.get(5)));
+            Client client7 = clientService.persist(new ClientGold("Gld Klient 1", "gld1@ex.com", 10000.0, addresses.get(6)));
+            Client client8 = clientService.persist(new ClientGold("Gld Klient 2", "gld2@ex.com", 15000.0, addresses.get(7)));
+            Client client9 = clientService.persist(new ClientPlatinum("Plt Klient 1", "plt1@ex.com", 20000.0, addresses.get(8)));
+            Client client10 = clientService.persist(new ClientPlatinum("Klient Bez Kasy", "nomoney@ex.com", 50.0, addresses.get(9)));
 
-            addressRepository.persist(em, addr1);
-            addressRepository.persist(em, addr2);
-            addressRepository.persist(em, addr3);
-            addressRepository.persist(em, addr4);
-            addressRepository.persist(em, addr5);
-            System.out.println("Zapisano adresy.");
+            System.out.println("\n--- Tworzenie 10 pojazdów ---");
+            Vehicle vehicle1 = vehicleService.persist(new Car("EL 001", 150.0, 1.6, "C"));
+            Vehicle vehicle2 = vehicleService.persist(new Car("EL 002", 200.0, 2.0, "D"));
+            Vehicle vehicle3 = vehicleService.persist(new Car("EL 003", 300.0, 3.0, "S"));
+            Vehicle vehicle4 = vehicleService.persist(new Car("EL 004", 100.0, 1.2, "B"));
+            Vehicle vehicle5 = vehicleService.persist(new Moped("EM 001", 80.0, 50.0));
+            Vehicle vehicle6 = vehicleService.persist(new Moped("EM 002", 90.0, 125.0));
+            Vehicle vehicle7 = vehicleService.persist(new Moped("EM 003", 85.0, 100.0));
+            Vehicle vehicle8 = vehicleService.persist(new Bicycle(30.0));
+            Vehicle vehicle9 = vehicleService.persist(new Bicycle(35.0));
+            Vehicle vehicle10 = vehicleService.persist(new Bicycle(40.0));
 
-            System.out.println("\n--- Tworzenie 5 obiektów Client ---");
-            Client client1 = new ClientStandard("Jan Kowalski", "jan@example.com", 1000.0, addr1);
-            Client client2 = new ClientBronze("Anna Nowak", "anna@example.com", 2000.0, addr2);
-            Client client3 = new ClientSilver("Piotr Wiśniewski", "piotr@example.com", 3000.0, addr3);
-            Client client4 = new ClientGold("Maria Dąbrowska", "maria@example.com", 4000.0, addr4);
-            Client client5 = new ClientPlatinum("Krzysztof Lewandowski", "kris@example.com", 5000.0, addr5);
+            rentService.createRent(client1.getId(), vehicle1.getId(), 5);
+            rentService.createRent(client2.getId(), vehicle2.getId(), 6);
+            rentService.createRent(client3.getId(), vehicle3.getId(), 7);
+            rentService.createRent(client4.getId(), vehicle4.getId(), 8);
+            rentService.createRent(client5.getId(), vehicle5.getId(), 9);
 
-            clientRepository.persist(em, client1);
-            clientRepository.persist(em, client2);
-            clientRepository.persist(em, client3);
-            clientRepository.persist(em, client4);
-            clientRepository.persist(em, client5);
-            System.out.println("Zapisano klientów.");
-
-            System.out.println("\n--- Tworzenie 5 obiektów Vehicle ---");
-            Vehicle car1 = new Car("EL 12345", 150.0, 1.6, "C");
-            Vehicle car2 = new Car("WPR 54321", 200.0, 2.0, "D (SUV)");
-            Vehicle moped1 = new Moped("SK 987A", 80.0, 50.0);
-            Vehicle moped2 = new Moped("GD 456B", 90.0, 125.0);
-            Vehicle bicycle1 = new Bicycle(30.0);
-
-            vehicleRepository.persist(em, car1);
-            vehicleRepository.persist(em, car2);
-            vehicleRepository.persist(em, moped1);
-            vehicleRepository.persist(em, moped2);
-            vehicleRepository.persist(em, bicycle1);
-            System.out.println("Zapisano pojazdy.");
-
-            em.flush();
-
-            System.out.println("\n--- Tworzenie 5 obiektów Rent ---");
-            Rent rent1 = new Rent(client1, car1, 10);
-            Rent rent2 = new Rent(client2, car2, 15);
-            Rent rent3 = new Rent(client3, moped1, 20);
-            Rent rent4 = new Rent(client4, moped2, 25);
-            Rent rent5 = new Rent(client5, bicycle1, 30);
-
-
-
-            rentRepository.persist(em, rent1);
-            rentRepository.persist(em, rent2);
-            rentRepository.persist(em, rent3);
-            rentRepository.persist(em, rent4);
-            rentRepository.persist(em, rent5);
-            System.out.println("Zapisano wypożyczenia.");
-
-            tx.commit();
-            System.out.println(rent1);
-            System.out.println(rent2);
-            System.out.println(rent3);
-            System.out.println(rent4);
-            System.out.println(rent5);
-
-            System.out.println("\nTransakcja zakończona sukcesem! Obiekty zapisane w bazie.");
+            rentService.createRent(client6.getId(), vehicle6.getId(), 9);
+            rentService.createRent(client7.getId(), vehicle7.getId(), 8);
+            rentService.createRent(client8.getId(), vehicle8.getId(), 7);
+            rentService.createRent(client9.getId(), vehicle9.getId(), 6);
+            rentService.createRent(client10.getId(), vehicle10.getId(), 5);
 
         } catch (Exception e) {
-            if (tx != null && tx.isActive()) {
-                tx.rollback();
-            }
             e.printStackTrace();
         } finally {
-            if (em != null) {
-                em.close();
-            }
-            if (emf != null) {
+            if (emf != null && emf.isOpen()) {
                 emf.close();
+                System.out.println("\nEntityManagerFactory zamknięte.");
             }
         }
     }

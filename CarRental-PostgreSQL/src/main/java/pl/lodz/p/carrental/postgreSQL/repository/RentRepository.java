@@ -11,13 +11,15 @@ public class RentRepository {
         em.persist(rent);
     }
 
-    public Rent update(EntityManager em, Rent rent) {
-        return em.merge(rent);
+    public void update(EntityManager em, Rent rent) {
+        em.merge(rent);
     }
 
-    public Rent remove(EntityManager em, Rent rent) {
-        em.remove(rent);
-        return rent;
+    public void remove(EntityManager em, UUID rentId) {
+        Rent rent = searchById(em, rentId);
+        if (rent != null) {
+            em.remove(rent);
+        }
     }
 
     public Rent searchById(EntityManager em, UUID id) {

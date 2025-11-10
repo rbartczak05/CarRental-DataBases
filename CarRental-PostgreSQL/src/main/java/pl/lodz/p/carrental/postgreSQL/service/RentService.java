@@ -2,16 +2,15 @@ package pl.lodz.p.carrental.postgreSQL.service;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 import pl.lodz.p.carrental.postgreSQL.model.Rent;
 import pl.lodz.p.carrental.postgreSQL.model.client.Client;
 import pl.lodz.p.carrental.postgreSQL.model.vehicle.Vehicle;
-import pl.lodz.p.carrental.postgreSQL.repository.AddressRepository;
 import pl.lodz.p.carrental.postgreSQL.repository.ClientRepository;
 import pl.lodz.p.carrental.postgreSQL.repository.RentRepository;
 import pl.lodz.p.carrental.postgreSQL.repository.VehicleRepository;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class RentService {
@@ -38,39 +37,93 @@ public class RentService {
         if (days <= 0) {
             throw new IllegalArgumentException("Days cannot be less than or equal to zero");
         }
-        EntityManager em = emf.createEntityManager();
+        EntityTransaction tx = null;
 
-        Client client = clientRepository.searchById(em, clientId);
-        Vehicle vehicle = vehicleRepository.searchById(em, vehicleId);
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
 
-        Rent rent = new Rent(client, vehicle, days);
-        rent.getVehicle().setRented(true);
+            Client client = clientRepository.searchById(em, clientId);
+            Vehicle vehicle = vehicleRepository.searchById(em, vehicleId);
 
+            if (vehicle.isRented()) {
+                throw new IllegalArgumentException("Vehicle with id " + vehicle.getId() + " is already rented");
+            }
 
-        rentRepository.persist(em, rent);
-        return rent;
+            Rent rent = new Rent(client, vehicle, days);
+            if (client.getBalance() < rent.getPrice()) {
+                throw new IllegalArgumentException("Client with id " + client.getId() + " has not enough balance");
+            }
+            client.substractBalance(rent.getPrice());
+            rent.getVehicle().setRented(true);
+
+            rentRepository.persist(em, rent);
+
+            tx.commit();
+            return rent;
+
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     public Rent endRent(Rent rent) {
-        rent.setActive(false);
-        rent.setReturnDate(LocalDate.now());
-        rent.getVehicle().setRented(false);
-        return rent;
+        EntityTransaction tx = null;
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
+            rent.setActive(false);
+            rent.setReturnDate(LocalDate.now());
+            rent.getVehicle().setRented(false);
+            rentRepository.update(em, rent);
+            tx.commit();
+            return rent;
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            throw e;
+        }
     }
 
-    public Rent updateRent(Rent rent){
-        if (rent == null) {
-            throw new IllegalArgumentException("Rent cannot be null");
+    public void update(Rent rent) {
+        EntityTransaction tx = null;
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
+            rentRepository.update(em, rent);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            throw e;
         }
-        EntityManager em = emf.createEntityManager();
-        return rentRepository.update(em, rent);
     }
 
-    public Rent removeRent(UUID rentId){
-        if (rentId == null) {
-            throw new IllegalArgumentException("Rent cannot be null");
+    public void remove(UUID rentId) {
+        EntityTransaction tx = null;
+        try (EntityManager em = emf.createEntityManager()) {
+            tx = em.getTransaction();
+            tx.begin();
+            rentRepository.remove(em, rentId);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null && tx.isActive()) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            throw e;
         }
-        EntityManager em = emf.createEntityManager();
-        return rentRepository.remove(em, rentRepository.searchById(em, rentId));
+    }
+
+    public Rent searchRentById(UUID id) {
+        return rentRepository.searchById(emf.createEntityManager(), id);
     }
 }
