@@ -24,7 +24,7 @@ class VehicleServiceTest extends BaseIntegrationTest {
         Vehicle foundVehicle = vehicleService.searchVehicleById(persistedVehicle.getId());
         assertNotNull(foundVehicle);
         assertEquals(200.0, foundVehicle.getPricePerDay());
-        assertTrue(foundVehicle instanceof Car);
+        assertInstanceOf(Car.class, foundVehicle);
         assertEquals("EL 12345", ((Car) foundVehicle).getPlateNumber());
     }
 
@@ -39,7 +39,7 @@ class VehicleServiceTest extends BaseIntegrationTest {
         Vehicle foundVehicle = vehicleService.searchVehicleById(persistedVehicle.getId());
         assertNotNull(foundVehicle);
         assertEquals(50.0, foundVehicle.getPricePerDay());
-        assertTrue(foundVehicle instanceof Bicycle);
+        assertInstanceOf(Bicycle.class, foundVehicle);
     }
 
     @Test

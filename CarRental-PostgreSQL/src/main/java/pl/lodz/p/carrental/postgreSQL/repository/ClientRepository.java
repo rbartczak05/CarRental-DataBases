@@ -21,6 +21,7 @@ public class ClientRepository {
             em.remove(client);
         }
     }
+
     public Client searchById(EntityManager em, UUID id) {
         return em.find(Client.class, id);
     }

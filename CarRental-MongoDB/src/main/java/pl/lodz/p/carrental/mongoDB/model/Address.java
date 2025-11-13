@@ -1,16 +1,44 @@
 package pl.lodz.p.carrental.mongoDB.model;
 
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
+import java.util.UUID;
+
 public class Address {
+
+    @BsonProperty("_id")
+    private UUID id;
+
+    @BsonProperty("street")
     private String street;
+
+    @BsonProperty("house_number")
     private String houseNumber;
+
+    @BsonProperty("city")
     private String city;
+
+    @BsonProperty("postal_code")
     private String postalCode;
 
     public Address(String street, String houseNumber, String city, String postalCode) {
+        this.id = UUID.randomUUID();
         this.street = street;
         this.houseNumber = houseNumber;
         this.city = city;
         this.postalCode = postalCode;
+    }
+
+    public Address() {
+
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getStreet() {
@@ -48,10 +76,11 @@ public class Address {
     @Override
     public String toString() {
         return "Address{" +
-                "street='" + street + '\'' +
-                ", houseNumber='" + houseNumber + '\'' +
-                ", city='" + city + '\'' +
-                ", postalCode='" + postalCode + '\'' +
-                '}';
+                "id=" + getId() +
+                ", postalCode='" + getPostalCode() + '\'' +
+                ", city='" + getCity() + '\'' +
+                ", houseNumber='" + getHouseNumber() + '\'' +
+                ", street='" + getStreet() + '\'' +
+                "}";
     }
 }

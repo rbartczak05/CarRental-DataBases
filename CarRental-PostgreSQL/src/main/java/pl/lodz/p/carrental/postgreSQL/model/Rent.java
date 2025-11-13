@@ -5,17 +5,16 @@ import pl.lodz.p.carrental.postgreSQL.model.client.Client;
 import pl.lodz.p.carrental.postgreSQL.model.vehicle.Vehicle;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Entity
 @Table(name = "rent")
 @Access(AccessType.FIELD)
 public class Rent extends AbstractEntity {
 
-    @ManyToOne(fetch = FetchType.EAGER ,cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "client_id", foreignKey = @ForeignKey(name = "fk_rent_client_id"))
     private Client client;
-    @ManyToOne(fetch = FetchType.EAGER,cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.MERGE)
     @JoinColumn(name = "vehicle_id", foreignKey = @ForeignKey(name = "fk_rent_vehicle_id"))
     private Vehicle vehicle;
     @Column(name = "days")

@@ -3,8 +3,6 @@ package pl.lodz.p.carrental.postgreSQL.model.vehicle;
 import jakarta.persistence.*;
 import pl.lodz.p.carrental.postgreSQL.model.AbstractEntity;
 
-import java.util.UUID;
-
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "vehicle_type")

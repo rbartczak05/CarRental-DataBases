@@ -2,8 +2,6 @@ package pl.lodz.p.carrental.postgreSQL.model;
 
 import jakarta.persistence.*;
 
-import java.util.UUID;
-
 @Entity
 @Table(name = "address")
 @Access(AccessType.FIELD)

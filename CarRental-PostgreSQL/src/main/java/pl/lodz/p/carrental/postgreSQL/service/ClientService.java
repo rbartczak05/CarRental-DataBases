@@ -3,7 +3,6 @@ package pl.lodz.p.carrental.postgreSQL.service;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.EntityTransaction;
-import pl.lodz.p.carrental.postgreSQL.model.Address;
 import pl.lodz.p.carrental.postgreSQL.model.client.Client;
 import pl.lodz.p.carrental.postgreSQL.repository.ClientRepository;
 

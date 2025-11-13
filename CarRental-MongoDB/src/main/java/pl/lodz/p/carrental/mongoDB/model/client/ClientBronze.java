@@ -1,12 +1,25 @@
 package pl.lodz.p.carrental.mongoDB.model.client;
 
-import pl.lodz.p.carrental.mongoDB.model.Address;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 
+import java.util.UUID;
+
+@BsonDiscriminator(key = "_clazz", value = "ClientBronze")
 public class ClientBronze extends Client {
 
-    public ClientBronze(String name, String email, double balance, Address address) {
-        super(name, email, balance, address);
-        setClientType(ClientType.BRONZE);
+    public ClientBronze(String name, String email, double balance, UUID addressId) {
+        super(name, email, balance, addressId);
+    }
+
+    public ClientBronze() {
+
+    }
+
+    @BsonIgnore
+    @Override
+    public ClientType getClientType() {
+        return ClientType.BRONZE;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class RentService {
     private final ClientRepository clientRepository;
     private final RentRepository rentRepository;
     private final VehicleRepository vehicleRepository;
-    private EntityManagerFactory emf;
+    private final EntityManagerFactory emf;
 
     public RentService(EntityManagerFactory emf, ClientRepository clientRepository, RentRepository rentRepository, VehicleRepository vehicleRepository) {
         this.emf = emf;
@@ -27,7 +27,7 @@ public class RentService {
         this.vehicleRepository = vehicleRepository;
     }
 
-    public Rent createRent(UUID clientId, UUID vehicleId, int days){
+    public Rent createRent(UUID clientId, UUID vehicleId, int days) {
         if (clientId == null) {
             throw new IllegalArgumentException("Client cannot be null");
         }

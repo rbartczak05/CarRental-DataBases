@@ -28,7 +28,7 @@ public abstract class Client extends AbstractEntity {
     @JoinColumn(name = "address_id")
     private Address address;
     @OneToMany(mappedBy = "client", cascade = CascadeType.MERGE)
-    private List<Rent> rents = new ArrayList<>();
+    private final List<Rent> rents = new ArrayList<>();
 
     public Client(String name, String email, double balance, Address address) {
         this.name = name;
@@ -68,6 +68,7 @@ public abstract class Client extends AbstractEntity {
     public void addBalance(double amount) {
         this.balance += amount;
     }
+
     public void substractBalance(double amount) {
         this.balance -= amount;
     }
