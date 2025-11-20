@@ -1,29 +1,50 @@
 package pl.lodz.p.carrental.redis.model.client;
 
-import pl.lodz.p.carrental.redis.model.Address;
-import pl.lodz.p.carrental.redis.model.client.ClientType;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.util.UUID;
 
+@BsonDiscriminator(key = "_clazz")
 public abstract class Client {
 
-    private final UUID clientId;
-    private String name;
-    private String email;
-    private ClientType clientType;
-    private double balance;
-    private Address address;
+    @BsonProperty("_id")
+    private UUID id;
 
-    public Client(String name, String email, double balance, Address address) {
-        this.clientId = UUID.randomUUID();
+    @BsonProperty("name")
+    private String name;
+
+    @BsonProperty("email")
+    private String email;
+
+    @BsonProperty("balance")
+    private double balance;
+
+    @BsonProperty("addressId")
+    private UUID addressId;
+
+    public Client(String name, String email, double balance, UUID addressId) {
+        this.id = UUID.randomUUID();
         this.name = name;
         this.email = email;
         this.balance = balance;
-        this.address = address;
+        this.addressId = addressId;
     }
 
-    public UUID getClientId() {
-        return clientId;
+    public Client() {
+
+    }
+
+    @BsonIgnore
+    public abstract ClientType getClientType();
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -42,14 +63,6 @@ public abstract class Client {
         this.email = email;
     }
 
-    public ClientType getClientType() {
-        return clientType;
-    }
-
-    public void setClientType(ClientType clientType) {
-        this.clientType = clientType;
-    }
-
     public double getBalance() {
         return balance;
     }
@@ -58,23 +71,35 @@ public abstract class Client {
         this.balance = balance;
     }
 
-    public Address getAddress() {
-        return address;
+    public void addBalance(double amount) {
+        this.balance += amount;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void substractBalance(double amount) {
+        this.balance -= amount;
+    }
+
+    public UUID getAddressId() {
+        return addressId;
+    }
+
+    public void setAddressId(UUID addressId) {
+        this.addressId = addressId;
+    }
+
+    @BsonIgnore
+    public String getJsonType() {
+        return this.getClass().getSimpleName();
     }
 
     @Override
     public String toString() {
-        return "Client{" +
-                "clientId=" + clientId +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", clientType=" + clientType +
-                ", balance=" + balance +
-                ", address=" + address +
-                '}';
+        return "id=" + getId() +
+                ", name=" + getName() +
+                ", email=" + getEmail() +
+                ", balance=" + getBalance() +
+                ", addressId=" + getAddressId() +
+                ", clientType=" + getClientType().getMaxVehicles() +
+                ", discount=" + getClientType().getDiscount();
     }
 }

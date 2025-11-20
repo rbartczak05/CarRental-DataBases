@@ -1,11 +1,16 @@
 package pl.lodz.p.carrental.redis.model.vehicle;
 
-import pl.lodz.p.carrental.redis.model.vehicle.Vehicle;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
 
+@BsonDiscriminator(key = "_clazz", value = "Bicycle")
 public class Bicycle extends Vehicle {
 
-    public Bicycle(String plateNumber, double pricePerDay) {
-        super(plateNumber, pricePerDay);
+    public Bicycle(double pricePerDay) {
+        super(pricePerDay);
+    }
+
+    public Bicycle() {
+
     }
 
     @Override

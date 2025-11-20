@@ -1,7 +1,5 @@
 package pl.lodz.p.carrental.cassandra.model.vehicle;
 
-import pl.lodz.p.carrental.cassandra.model.vehicle.Vehicle;
-
 public abstract class MotorVehicle extends Vehicle {
 
     private double engineDisplacement;

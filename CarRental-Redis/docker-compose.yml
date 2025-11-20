@@ -1,0 +1,92 @@
+version: '3.8'
+
+services:
+  mongo_1:
+    image: mongo:8.0.1
+    container_name: mongodb1
+    hostname: mongodb1
+    networks:
+      - carrental-net
+    ports:
+      - "27017:27017"
+    command: [ "--replSet", "library_replica_set", "--bind_ip_all" ]
+    volumes:
+      - mongo-db-data-1:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo_2:
+    image: mongo:8.0.1
+    container_name: mongodb2
+    hostname: mongodb2
+    networks:
+      - carrental-net
+    ports:
+      - "27018:27017"
+    command: [ "--replSet", "library_replica_set", "--bind_ip_all" ]
+    volumes:
+      - mongo-db-data-2:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongo_3:
+    image: mongo:8.0.1
+    container_name: mongodb3
+    hostname: mongodb3
+    networks:
+      - carrental-net
+    ports:
+      - "27019:27017"
+    command: [ "--replSet", "library_replica_set", "--bind_ip_all" ]
+    volumes:
+      - mongo-db-data-3:/data/db
+    healthcheck:
+      test: [ "CMD", "mongosh", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  mongoinit:
+    image: mongo:8.0.1
+    networks:
+      - carrental-net
+    depends_on:
+      mongo_1: { condition: service_healthy }
+      mongo_2: { condition: service_healthy }
+      mongo_3: { condition: service_healthy }
+    command: >
+      mongosh --host mongodb1:27017 --eval '
+        rs.initiate({
+          _id: "library_replica_set",
+          members: [
+            {_id: 0, host: "mongodb1:27017"},
+            {_id: 1, host: "mongodb2:27017"},
+            {_id: 2, host: "mongodb3:27017"}
+          ]
+        })'
+
+  redis-stack:
+    image: redis/redis-stack:latest
+    container_name: redis-stack
+    networks:
+      - carrental-net
+    ports:
+      - "6379:6379"
+      - "8001:8001" # GUI: http://localhost:8001/redis-stack/browser
+    volumes:
+      - redis-data:/data
+
+networks:
+  carrental-net: { }
+
+volumes:
+  mongo-db-data-1:
+  mongo-db-data-2:
+  mongo-db-data-3:
+  redis-data:

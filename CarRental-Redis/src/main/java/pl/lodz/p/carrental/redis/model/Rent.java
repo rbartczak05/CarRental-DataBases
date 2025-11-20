@@ -1,51 +1,78 @@
 package pl.lodz.p.carrental.redis.model;
 
-import pl.lodz.p.carrental.redis.model.client.Client;
-import pl.lodz.p.carrental.redis.model.vehicle.Vehicle;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
 import java.time.LocalDate;
 import java.util.UUID;
 
+
 public class Rent {
 
-    private final UUID rentId;
-    private Client client;
-    private Vehicle vehicle;
+    @BsonProperty("_id")
+    private UUID id;
+
+    @BsonProperty("clientId")
+    private UUID clientId;
+
+    @BsonProperty("vehicleId")
+    private UUID vehicleId;
+
+    @BsonProperty("days")
     private int days;
+
+    @BsonProperty("startDate")
     private LocalDate startDate;
+
+    @BsonProperty("returnDate")
+    private LocalDate returnDate;
+
+    @BsonProperty("endDate")
     private LocalDate endDate;
+
+    @BsonProperty("price")
     private double price;
+
+    @BsonProperty("active")
     private boolean active;
 
-    public Rent(Client client, Vehicle vehicle, int days) {
-        this.rentId = UUID.randomUUID();
-        this.client = client;
-        this.vehicle = vehicle;
+    public Rent(UUID clientId, UUID vehicleId, int days) {
+        this.id = UUID.randomUUID();
+        this.clientId = clientId;
+        this.vehicleId = vehicleId;
         this.days = days;
         this.startDate = LocalDate.now();
+        this.returnDate = null;
         this.endDate = LocalDate.now().plusDays(days);
-        this.price = (vehicle.getPricePerDay() * days) * (1.00 - client.getClientType().getDiscount());
+        this.price = 0.00;
         this.active = true;
     }
 
-    public UUID getRentId() {
-        return rentId;
+    public Rent() {
+
     }
 
-    public Client getClient() {
-        return client;
+    public UUID getId() {
+        return id;
     }
 
-    public void setClient(Client client) {
-        this.client = client;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
-    public Vehicle getVehicle() {
-        return vehicle;
+    public UUID getClientId() {
+        return clientId;
     }
 
-    public void setVehicle(Vehicle vehicle) {
-        this.vehicle = vehicle;
+    public void setClientId(UUID clientId) {
+        this.clientId = clientId;
+    }
+
+    public UUID getVehicleId() {
+        return vehicleId;
+    }
+
+    public void setVehicleId(UUID vehicleId) {
+        this.vehicleId = vehicleId;
     }
 
     public int getDays() {
@@ -62,6 +89,14 @@ public class Rent {
 
     public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
+    }
+
+    public LocalDate getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(LocalDate returnDate) {
+        this.returnDate = returnDate;
     }
 
     public LocalDate getEndDate() {
@@ -90,10 +125,9 @@ public class Rent {
 
     @Override
     public String toString() {
-        return "Rent{" +
-                "rentId=" + rentId +
-                ", client=" + client +
-                ", vehicle=" + vehicle +
+        return "Rent{" + getId() +
+                ", clientId=" + clientId +
+                ", vehicleId=" + vehicleId +
                 ", days=" + days +
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +

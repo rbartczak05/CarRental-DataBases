@@ -96,7 +96,7 @@ services:
       "
 
 networks:
-  mongonet: {}
+  mongonet: { }
 
 volumes:
   mongo-db-data-1:

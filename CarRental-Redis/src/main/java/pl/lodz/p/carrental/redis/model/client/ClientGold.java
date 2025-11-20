@@ -1,13 +1,25 @@
 package pl.lodz.p.carrental.redis.model.client;
 
-import pl.lodz.p.carrental.redis.model.Address;
-import pl.lodz.p.carrental.redis.model.client.ClientType;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
 
+import java.util.UUID;
+
+@BsonDiscriminator(key = "_clazz", value = "ClientGold")
 public class ClientGold extends Client {
 
-    public ClientGold(String name, String email, double balance, Address address) {
-        super(name, email, balance, address);
-        setClientType(ClientType.GOLD);
+    public ClientGold(String name, String email, double balance, UUID addressId) {
+        super(name, email, balance, addressId);
+    }
+
+    public ClientGold() {
+
+    }
+
+    @BsonIgnore
+    @Override
+    public ClientType getClientType() {
+        return ClientType.GOLD;
     }
 
     @Override

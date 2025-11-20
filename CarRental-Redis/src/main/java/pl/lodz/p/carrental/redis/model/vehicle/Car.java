@@ -1,14 +1,21 @@
 package pl.lodz.p.carrental.redis.model.vehicle;
 
-import pl.lodz.p.carrental.redis.model.vehicle.MotorVehicle;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
+@BsonDiscriminator(key = "_clazz", value = "Car")
 public class Car extends MotorVehicle {
 
+    @BsonProperty("segement")
     private String segement;
 
     public Car(String plateNumber, double pricePerDay, double engineDisplacement, String segement) {
         super(plateNumber, pricePerDay, engineDisplacement);
         this.segement = segement;
+    }
+
+    public Car() {
+
     }
 
     public String getSegement() {
@@ -21,8 +28,8 @@ public class Car extends MotorVehicle {
 
     @Override
     public String toString() {
-        return "Car{" +
-                "segement='" + segement + '\'' +
-                '}';
+        return "Car{" + super.toString() +
+                ", segement=" + getSegement() +
+                "}";
     }
 }

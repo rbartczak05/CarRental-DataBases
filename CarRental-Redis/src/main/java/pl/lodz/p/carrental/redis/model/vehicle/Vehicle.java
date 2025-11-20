@@ -1,31 +1,39 @@
 package pl.lodz.p.carrental.redis.model.vehicle;
 
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonIgnore;
+import org.bson.codecs.pojo.annotations.BsonProperty;
+
 import java.util.UUID;
 
+@BsonDiscriminator(key = "_clazz")
 public abstract class Vehicle {
 
-    private final UUID vehicleId;
-    private String plateNumber;
+    @BsonProperty("_id")
+    private UUID id;
+
+    @BsonProperty("pricePerDay")
     private double pricePerDay;
+
+    @BsonProperty("rented")
     private boolean rented;
 
-    public Vehicle(String plateNumber, double pricePerDay) {
-        this.vehicleId = UUID.randomUUID();
-        this.plateNumber = plateNumber;
+    public Vehicle(double pricePerDay) {
+        this.id = UUID.randomUUID();
         this.pricePerDay = pricePerDay;
         this.rented = false;
     }
 
-    public UUID getVehicleId() {
-        return vehicleId;
+    public Vehicle() {
+
     }
 
-    public String getPlateNumber() {
-        return plateNumber;
+    public UUID getId() {
+        return id;
     }
 
-    public void setPlateNumber(String plateNumber) {
-        this.plateNumber = plateNumber;
+    public void setId(UUID id) {
+        this.id = id;
     }
 
     public double getPricePerDay() {
@@ -44,13 +52,15 @@ public abstract class Vehicle {
         this.rented = rented;
     }
 
+    @BsonIgnore
+    public String getJsonType() {
+        return this.getClass().getSimpleName();
+    }
+
     @Override
     public String toString() {
-        return "Vehicle{" +
-                "vehicleId=" + vehicleId +
-                ", plateNumber='" + plateNumber + '\'' +
-                ", pricePerDay=" + pricePerDay +
-                ", rented=" + rented +
-                '}';
+        return "id=" + getId() +
+                ", rented=" + isRented() +
+                ", pricePerDay=" + getPricePerDay();
     }
 }

@@ -1,14 +1,33 @@
 package pl.lodz.p.carrental.redis.model.vehicle;
 
-import pl.lodz.p.carrental.redis.model.vehicle.Vehicle;
+import org.bson.codecs.pojo.annotations.BsonDiscriminator;
+import org.bson.codecs.pojo.annotations.BsonProperty;
 
+@BsonDiscriminator(key = "_clazz")
 public abstract class MotorVehicle extends Vehicle {
 
+    @BsonProperty("engineDisplacement")
     private double engineDisplacement;
 
+    @BsonProperty("plateNumber")
+    private String plateNumber;
+
     public MotorVehicle(String plateNumber, double pricePerDay, double engineDisplacement) {
-        super(plateNumber, pricePerDay);
+        super(pricePerDay);
+        this.plateNumber = plateNumber;
         this.engineDisplacement = engineDisplacement;
+    }
+
+    public MotorVehicle() {
+
+    }
+
+    public String getPlateNumber() {
+        return plateNumber;
+    }
+
+    public void setPlateNumber(String plateNumber) {
+        this.plateNumber = plateNumber;
     }
 
     public double getEngineDisplacement() {
@@ -21,8 +40,8 @@ public abstract class MotorVehicle extends Vehicle {
 
     @Override
     public String toString() {
-        return "MotorVehicle{" +
-                "engineDisplacement=" + engineDisplacement +
-                '}';
+        return super.toString() +
+                ", engineDisplacement=" + getEngineDisplacement() +
+                ", plateNumber=" + getPlateNumber();
     }
 }
